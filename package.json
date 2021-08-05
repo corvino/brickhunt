@@ -4,7 +4,8 @@
   "description": "",
   "main": "watch/main/index.js",
   "scripts": {
-    "start": "concurrently 'vite' 'tsc --watch -p src/main/ --outDir watch/main'",
+    "start": "concurrently 'vite' 'tsc --watch -p src/main/ --outDir watch/main' 'electron .'",
+    "debug": "concurrently 'vite' 'tsc --watch -p src/main/ --outDir watch/main'",
     "build": "concurrently 'npm run build:main' 'npm run build:renderer'",
     "build:main": "tsc -p src/main --outDir build/main",
     "build:renderer": "vite build",
