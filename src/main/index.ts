@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 import util from "util";
-import { app, BrowserWindow, session } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, session } from "electron";
 import electronIsDev from "electron-is-dev";
 
 async function loadReactDevTools() {
@@ -21,7 +21,6 @@ async function loadReactDevTools() {
 
 let mainWindow: BrowserWindow;
 app.whenReady().then(async () => {
-  console.log("ready")
   if (electronIsDev) {
     await loadReactDevTools()
     // setTimeout(() => loadReactDevTools(), 5000);
@@ -54,3 +53,21 @@ app.whenReady().then(async () => {
     mainWindow.show();
   });
 });
+
+ipcMain.on("openFile", async (event) => {
+    const filePath = await openFile()
+    event.reply("openFile", filePath)
+})
+
+async function openFile() {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ["openFile", "openDirectory"]
+  })
+
+  if (!result.canceled && 1 == result.filePaths.length) {
+    const filePath = result.filePaths[0];
+    const data = await fs.promises.readFile(filePath, "utf-8")
+    // Parse file and stash date to be saved when list is created.
+    return filePath;
+  }
+}
