@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "lib": ["dom", "es2020"],
-    "target": "es2020",
+    "experimentalDecorators": true,
     "sourceMap": true
-  },
-  "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js"]
+  }
 }

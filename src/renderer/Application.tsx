@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Link, Redirect, Route, Switch } from "react-router-dom";
 
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 
@@ -83,6 +83,7 @@ class Application extends Component {
                 <Switch>
                   <Route path="/parts" component={PartsTable} />
                   <Route path="/builds" component={BuildsList} />
+                  <Route exact path="/"><Redirect to="/parts" /></Route>
                 </Switch>
               </Router>
 

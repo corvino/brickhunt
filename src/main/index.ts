@@ -4,6 +4,23 @@ import os from "os";
 import util from "util";
 import { app, BrowserWindow, dialog, ipcMain, session } from "electron";
 import electronIsDev from "electron-is-dev";
+import {Connection, createConnection, Repository, ConnectionManager} from "typeorm";
+
+import {Build} from "./entity/Build";
+
+// let connection: Connection;
+
+(async () => {
+  const dbFile = path.join(app.getPath('userData'), 'brickhunt.sqlite');
+  await createConnection({
+    type: "sqlite",
+    database: dbFile,
+    entities: [Build],
+    // FIXME: This is for dev; replace with a more robust solution.
+    // https://typeorm.io/#/connection-options/common-connection-options
+    synchronize: true
+  });
+})();
 
 async function loadReactDevTools() {
   console.log("loading react dev tools.");
@@ -54,10 +71,26 @@ app.whenReady().then(async () => {
   });
 });
 
+ipcMain.on("buildList", async (event) => {
+  const builds = (await Build.find()).map((build) => {
+    return { name: build.name };
+  });
+
+  event.reply("builds", builds);
+});
+
 ipcMain.on("openFile", async (event) => {
     const filePath = await openFile()
     event.reply("openFile", filePath)
-})
+});
+
+ipcMain.on("createBuild", async (event, arg) => {
+  const build = new Build();
+  build.name = arg.name;
+  await build.save();
+
+  event.reply("buildCreated");
+});
 
 async function openFile() {
   const result = await dialog.showOpenDialog(mainWindow, {

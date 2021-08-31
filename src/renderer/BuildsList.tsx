@@ -1,27 +1,39 @@
 const { ipcRenderer } = require('electron');
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog } from '@headlessui/react'
 import { UploadIcon, PlusCircleIcon } from "@heroicons/react/outline";
-
-const builds = [];
 
 const openFile = (event) => {
   ipcRenderer.send("openFile");
 }
 
+ipcRenderer.on("buildCreated", (_) => {
+  ipcRenderer.send("buildList");
+})
+
 function AddBuild(props) {
+  let [name, setName] = useState("");
   let [filePath, setFilePath] = useState("");
 
-  ipcRenderer.on('openFile', (event, filePath) => {
+  ipcRenderer.on("openFile", (_, filePath) => {
     setFilePath(filePath);
   });
+
+  const addBuild = () => {
+    ipcRenderer.send("createBuild", {name: name});
+  }
+
+  const close = () => {
+    setName("");
+    props.close();
+  }
 
   return (
     <Dialog
       as="div"
       className="fixed inset-0 z-10 overflow-y-auto"
       open={props.open}
-      onClose={props.close}>
+      onClose={close}>
 
       <Dialog.Overlay />
 
@@ -41,6 +53,8 @@ function AddBuild(props) {
                   type="text"
                   name="name"
                   id="name"
+                  value={name}
+                  onChange={(event) => {setName(event.target.value)}}
                   autoComplete="name"
                   className="max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md"
                 />
@@ -78,14 +92,14 @@ function AddBuild(props) {
                 <button
                   type="button"
                   className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  onClick={props.close}
+                  onClick={close}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  onClick={props.close}
+                  onClick={(_) => { addBuild(); close(); }}
                 >
                   Save
                 </button>
@@ -112,7 +126,6 @@ const PartsTableHeader = () => {
     <thead className="bg-gray-50">
       <tr>
         <BuildHeaderItem title="Name" />
-        <BuildHeaderItem title="Pieces" />
       </tr>
     </thead>
   );
@@ -121,21 +134,8 @@ const PartsTableHeader = () => {
 const BuildRow = (props) => {
   return (
     <tr>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center">
-          <div className="flex-shrink-0 h-10 w-10">
-            <img src={`${props.imgURL}`}></img>
-          </div>
-        </div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {props.designId}
-      </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
         {props.name}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        ${props.price}
       </td>
     </tr>
   );
@@ -143,6 +143,16 @@ const BuildRow = (props) => {
 
 export default () => {
   let [addOpen, setAddOpen] = useState(false);
+  let [builds, setBuilds] = useState([]);
+
+  useEffect(() => {
+    ipcRenderer.send("buildList");
+
+    ipcRenderer.on("builds", (_, builds) => {
+      setBuilds(builds);
+    });
+  }, []);
+
   const closeAddOpen = () => {
     setAddOpen(false);
   }
@@ -157,10 +167,23 @@ export default () => {
             </button>
             Builds
           </div>
-          <div>
 
+          <div className="flex flex-col mt-4">
+          <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+              <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <PartsTableHeader />
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {builds.map(build => (
+                      <BuildRow key={build.id} {...build} />
+                    ))}
+                  </tbody>
+                </table >
+              </div>
+            </div>
           </div>
-        </div>
+        </div>        </div>
       </div>
 
       <AddBuild open={addOpen} close={closeAddOpen} />
