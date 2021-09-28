@@ -1,3 +1,5 @@
+#! /usr/bin/env node
+
 // https://github.com/puppeteer/puppeteer#debugging-tips
 // https://www.twilio.com/blog/how-to-build-a-cli-with-node-js
 
@@ -133,7 +135,10 @@ async function closeModal(page) {
 async function waitOnScroll(page, target) {
   while (true) {
     const offset = await page.evaluate(_ => window.pageYOffset);
-    if (target === offset) { break; }
+    // Targeting this directly is fragile. But this seems like it only]
+    // Solves that problem in one direction. Should look at determining
+    // the scroll direction and changing the comparison accordingly.
+    if (target >= offset) { break; }
     // console.log(`offset: ${offset}; target: ${target}`);
     sleep(100);
   }
@@ -185,7 +190,8 @@ function logObject(obj) {
     // https://stackoverflow.com/questions/52553311/how-to-set-max-viewport-in-puppeteer
     const defaultViewport = { width: 800, height: 600 };
     const args = [`--window-size=${defaultViewport.width},${defaultViewport.height+123}`];
-    const browser = await puppeteer.launch({ executablePath: "/opt/homebrew/bin/chromium", headless: false, args });
+    // const browser = await puppeteer.launch({ executablePath: "/opt/homebrew/bin/chromium", headless: false, args });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 
     // await page.goto("https://www.lego.com");
@@ -284,23 +290,28 @@ function logObject(obj) {
       // next = await page.waitForSelector("[data-test='pagination-next']")
       // await sleep(250);
       console.log("Next page.")
-      next = await page.$("[data-test='pagination-next']");
+      next = await page.$('[data-test="pagination-next"]');
+      console.log("Got next element");
       if (next) {
         // console.log("next");
+        console.log("Going next");
         await Promise.all([
-          page.waitForNavigation({ waitUntil: "networkidle0" }),
+          page.waitForNavigation({ waitUntil: "domcontentloaded" }),
           next.click()
         ]);
+        console.log("Went next");
         // We need a pause here for the page to scroll to the top.
         // A second _usually_ works, but not always.
         // await sleep(5000);
         // Rather than sleep a fixed time, check if the window offset is
         // at the "done scrolling to the top" position.
         // Is this a finicky magic number?
+        console.log(doneScrollingY);
         await waitOnScroll(page, doneScrollingY);
+        console.log("scrolled");
       }
       pages++;
-    } while (next)
+    } while (next);
 
     logger.log("Close page");
     await page.close();
@@ -320,4 +331,3 @@ function logObject(obj) {
 //     await sleep(1000);
 //   }
 // }
-

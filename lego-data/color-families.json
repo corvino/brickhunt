@@ -1,0 +1,86 @@
+{
+  "Yellow": [
+    "Bright Yellow",
+    "Flame Yellowish Orange",
+    "Tr. Yellow",
+    "Cool Yellow"
+  ],
+  "Blue": [
+    "Earth Blue",
+    "Light Royal Blue",
+    "Tr. Blue",
+    "Bright Bluish Green",
+    "Tr. Light Blue",
+    "Bright Blue",
+    "Medium Azur",
+    "Medium Blue",
+    "Dark Azur",
+    "Aqua",
+    "Sand Blue"
+  ],
+  "Grey": [
+    "Medium Stone Grey",
+    "Dark Stone Grey"
+  ],
+  "Reddish Brown": [
+    "Sand Yellow",
+    "Dark Brown",
+    "Dark Orange",
+    "Brick Yellow",
+    "Tr. Brown",
+    "Reddish Brown",
+    "Medium Nougat"
+  ],
+  "White": [
+    "White",
+    "Transparent"
+  ],
+  "Warm Gold": [
+    "Warm Gold"
+  ],
+  "Red": [
+    "New Dark Red",
+    "Bright Red",
+    "Tr. Red"
+  ],
+  "Dark Green": [
+    "Sand Green",
+    "Bright Green",
+    "Bright Yellowish Green",
+    "Tr. Green",
+    "Dark Green",
+    "Earth Green",
+    "Olive Green",
+    "Spring Yellowish Green",
+    "Tr. Bright Green"
+  ],
+  "Silver": [
+    "Silver Metallic"
+  ],
+  "Black": [
+    "Black"
+  ],
+  "Bright Orange": [
+    "Tr. Bright Orange",
+    "Bright Orange"
+  ],
+  "Purple": [
+    "Tr. Medium Reddish Violet",
+    "Bright Reddish Violet",
+    "Light Purple",
+    "Bright Purple"
+  ],
+  "Lilac": [
+    "Medium Lavendel",
+    "Medium Lilac"
+  ],
+  "right Blue": [
+    "529235"
+  ],
+  "edium Azur": [
+    "625036"
+  ],
+  "right Orange": [
+    "223631"
+  ]
+}

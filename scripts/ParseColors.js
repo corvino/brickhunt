@@ -1,3 +1,7 @@
+#! /usr/bin/env node
+
+// HTML From https://swooshable.com/parts/colors
+
 const fs = require("fs");
 const xmldom = require("xmldom");
 
@@ -18,9 +22,9 @@ if (3 !== process.argv.length) {
   for (let i = 0; i < childs.length; i++) {
     let row = childs.item(i);
     if ("tr" === row.nodeName) {
-      const colorId = row.getAttribute("data-colorid");
+      const colorId = parseInt(row.getAttribute("data-colorid"));
       const material = row.childNodes.item(1).textContent;
-      const legoId = row.childNodes.item(3).textContent;
+      const legoId = parseInt(row.childNodes.item(3).textContent);
       const legoName = row.childNodes.item(5).textContent;
       const legoAbbreviation = row.childNodes.item(7).textContent;
 
@@ -32,9 +36,9 @@ if (3 !== process.argv.length) {
         }
       }
 
-      const bricklinkId = row.childNodes.item(11).textContent;
+      const bricklinkId = parseInt(row.childNodes.item(11).textContent);
       const bricklinkName = row.childNodes.item(13).textContent;
-      const ldrawId = row.childNodes.item(15).textContent;
+      const ldrawId = parseInt(row.childNodes.item(15).textContent);
       const ldrawName = row.childNodes.item(17).textContent;
       const peeronName = row.childNodes.item(19).textContent;
       const otherName = row.childNodes.item(21).textContent;
