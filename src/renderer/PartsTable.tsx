@@ -1,13 +1,87 @@
-import React, { Component, useState, useEffect } from "react";
+import React, {useState, useEffect } from "react";
 const { ipcRenderer } = require('electron');
-import fs from "fs";
-import ndjson from "ndjson-parse";
-import { filter } from "core-js/core/array";
+
+import { Dialog } from '@headlessui/react'
+import { partition } from "../../../../Library/Caches/typescript/4.4/node_modules/@types/lodash";
+
+const DesignDetail = (props) => {
+
+  const part = props.part;
+
+  const close = () => {
+    props.close();
+  }
+
+
+
+  return !part ? (<div></div>) : (
+    <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" open={props.open} onClose={close}>
+      <div className="flex h-screen justify-center items-center">
+        <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform ring-1 ring-gray-900 ring-opacity-5 bg-white shadow-xl rounded-2xl">
+
+          <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <form className="space-y-8 divide-y divide-gray-200">
+              <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+
+                <div>
+                  <div>
+                    <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">{part.name}</Dialog.Title>
+                  </div>
+                </div>
+
+                <div className="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
+
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label htmlFor="price" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                      Price
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      <div className="max-w-lg flex rounded-md shadow-sm">
+                        ${part.price}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                    <label htmlFor="colors" className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                      Colors
+                    </label>
+                    <div className="mt-1 sm:mt-0 sm:col-span-2">
+                      {part.partColors.map((partColor) => {
+                        return (
+                          <div>
+                            <div className="inline-block w-1/6">
+                              <img src={partColor.imgURL} className="h-10 w-10"></img>
+                            </div>
+
+                            <div className="inline-block w-3/6">
+                              {partColor.color.name}
+                            </div>
+
+                            <div className="inline-block w-2/6">
+                              {partColor.elementId}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </Dialog>
+  )
+}
 
 const PartsTableRow = (props) => {
   const part = props.part;
   return (
-    <tr>
+    <tr onClick={() => { props.showDetail(part) }}>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
           <div className="flex-shrink-0 h-10 w-10">
@@ -82,15 +156,8 @@ const PartsTable = () => {
   let [parts, setParts] = useState([]);
   let [term, setTerm] = useState("");
   let [filteredParts, setFilteredParts] = useState([]);
-
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     parts: []
-  //   };
-  //   this.term = "";
-  //   this.searchChanged = this.searchChanged.bind(this);
-  // }
+  let [isDetailOpen, setIsDetailOpen] = useState(false);
+  let [detailPart, setDetailPart] = useState(null);
 
   useEffect(() => {
     ipcRenderer.send("parts");
@@ -106,21 +173,17 @@ const PartsTable = () => {
     setFilteredParts(filterParts(parts, term));
   }
 
-  // async componentDidMount() {
-  //   const partsData = await fs.promises.readFile("./lego-data/output-1418-1.ndjson");
-  //   this.parts = dedupeElements(ndjson(partsData.toString()));
+  function showDetail(part) {
+    setDetailPart(part);
+    setIsDetailOpen(true);
+  }
 
-  //   this.setState({ parts: this.parts });
-  // }
+  const closeDetail = () => {
+    setIsDetailOpen(false);
+  }
 
-  // searchChanged(event) {
-  //   this.term = event.target.value;
-
-  //   this.setState({ parts: filterParts(this.parts, this.term) });
-  // }
-
-  // render() {
-    return (
+  return (
+    <main>
       <div>
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">Search</label>
@@ -129,7 +192,7 @@ const PartsTable = () => {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <img src="images/Brick1x1.svg" className="h-5 w-5" />
               </div>
-              <input type="text" name="email" id="email" className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-10 sm:text-sm border-gray-300" placeholder="Brick 2x4" value={term} onChange={searchChanged}/>
+              <input type="text" name="email" id="email" className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-10 sm:text-sm border-gray-300" placeholder="Brick 2x4" value={term} onChange={searchChanged} />
             </div>
           </div>
         </div>
@@ -141,7 +204,7 @@ const PartsTable = () => {
                   <PartsTableHeader />
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredParts.map(part => (
-                      <PartsTableRow key={part.designId} part={part} />
+                      <PartsTableRow key={part.designId} part={part} showDetail={showDetail}/>
                     ))}
                   </tbody>
                 </table >
@@ -150,8 +213,10 @@ const PartsTable = () => {
           </div>
         </div>
       </div>
-    );
-  // }
+
+      <DesignDetail open={isDetailOpen} close={closeDetail} part={detailPart} />
+    </main>
+  );
 }
 
 export default PartsTable;

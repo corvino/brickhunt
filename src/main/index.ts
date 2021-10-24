@@ -60,8 +60,7 @@ app.whenReady().then(async () => {
     show: false,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
-      enableRemoteModule: true
+      contextIsolation: false
     }
   });
 
@@ -81,9 +80,7 @@ app.whenReady().then(async () => {
 });
 
 ipcMain.on("buildList", async (event) => {
-  const builds = (await entities.Build.find()).map((build) => {
-    return { name: build.name };
-  });
+  const builds = await entities.Build.find();
 
   event.reply("builds", builds);
 });
@@ -102,12 +99,9 @@ ipcMain.on("createBuild", async (event, arg) => {
 });
 
 async function openFile() {
-  console.log("openFile");
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ["openFile", "openDirectory"]
   });
-
-  console.log("result");
 
   if (!result.canceled && 1 == result.filePaths.length) {
     const filePath = result.filePaths[0];
@@ -126,8 +120,6 @@ async function openFile() {
 
 ipcMain.on("parts", async (event) => {
   const parts = (await entities.Part.find());
-
-  console.log(parts);
 
   event.reply("parts", parts);
 });

@@ -142,7 +142,7 @@ const BuildRow = (props) => {
 }
 
 export default () => {
-  let [addOpen, setAddOpen] = useState(false);
+  let [isAddOpen, setIsAddOpen] = useState(false);
   let [builds, setBuilds] = useState([]);
 
   useEffect(() => {
@@ -153,8 +153,8 @@ export default () => {
     });
   }, []);
 
-  const closeAddOpen = () => {
-    setAddOpen(false);
+  const closeAdd = () => {
+    setIsAddOpen(false);
   }
 
   return (
@@ -162,31 +162,32 @@ export default () => {
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="relative w-full h-full">
           <div>
-            <button className="absolute w-6 h-6 -right-1 focus:outline-none" onClick={() => {setAddOpen(true)}}>
+            <button className="absolute w-6 h-6 -right-1 focus:outline-none" onClick={() => { setIsAddOpen(true) }}>
               <PlusCircleIcon className="block h-6 w-6" aria-hidden="true" />
             </button>
             Builds
           </div>
 
           <div className="flex flex-col mt-4">
-          <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-              <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <PartsTableHeader />
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {builds.map(build => (
-                      <BuildRow key={build.id} {...build} />
-                    ))}
-                  </tbody>
-                </table >
+            <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <PartsTableHeader />
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {builds.map(build => (
+                        <BuildRow key={build.id} {...build} />
+                      ))}
+                    </tbody>
+                  </table >
+                </div>
               </div>
             </div>
           </div>
-        </div>        </div>
+        </div>
       </div>
 
-      <AddBuild open={addOpen} close={closeAddOpen} />
+      <AddBuild open={isAddOpen} close={closeAdd} />
     </main>
   );
 }

@@ -12,7 +12,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/node_modules/.bin/electron",
-            "args": ["."]
+            "args": ["."],
+            "env": {"PORT": "3912"}
         }
     ]
 }
