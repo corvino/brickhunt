@@ -12,14 +12,12 @@ const DesignDetail = (props) => {
     props.close();
   }
 
-
-
   return !part ? (<div></div>) : (
-    <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" open={props.open} onClose={close}>
+    <Dialog as="div" className="fixed inset-0 z-10" open={props.open} onClose={close}>
       <div className="flex h-screen justify-center items-center">
         <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform ring-1 ring-gray-900 ring-opacity-5 bg-white shadow-xl rounded-2xl">
 
-          <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+          <div className="m-auto max-w-[calc(100vw-100px)] max-h-[calc(100vh-100px)] overflow-y-scroll py-4 px-4 sm:px-6 lg:px-8">
             <form className="space-y-8 divide-y divide-gray-200">
               <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
 

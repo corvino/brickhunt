@@ -30,10 +30,10 @@ app.whenReady().then(async () => {
   console.debug(`Database file: ${dbFile}`);
 
   try {
-    await fs.promises.stat(dbFile)
+    await fs.promises.stat(dbFile);
   } catch(error) {
     const source = path.join(process.cwd(), 'Brickhunt.sqlite');
-    await fs.promises.copyFile(source, dbFile)
+    await fs.promises.copyFile(source, dbFile);
   }
 
   await (async () => {
