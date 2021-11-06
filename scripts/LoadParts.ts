@@ -10,6 +10,11 @@ import { normalizeColor } from "./Shared";
 
 const inputFile = "lego-data/output.ndjson";
 
+const legoToBricklink = {
+  6141: 4073,
+  35381: 98138
+}
+
 type PartEntry = {
   name: string,
   colorFamily: string,
@@ -36,8 +41,11 @@ type PartEntry = {
     if (!prt) {
       prt = new entities.Part();
       prt.name = part.name;
-      prt.designId = part.designId;
       prt.price = part.price;
+      prt.designId = part.designId;
+      prt.bricklinkId = (part.designId in legoToBricklink) ?
+        legoToBricklink[part.designId] :
+        part.designId
     }
 
     let colorName = normalizeColor(part.exactColor);

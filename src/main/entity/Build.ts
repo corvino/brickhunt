@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany} from "typeorm";
+import * as e from ".";
 
 @Entity()
 export class Build extends BaseEntity {
@@ -8,4 +9,7 @@ export class Build extends BaseEntity {
 
   @Column()
   name: string;
+
+  @OneToMany(() => e.BuildItem, b => b.build, { cascade: true})
+  items: e.BuildItem[]
 }

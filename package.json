@@ -18,6 +18,8 @@
     "@headlessui/react": "^1.4.0",
     "@heroicons/react": "^1.0.4",
     "@tailwindcss/forms": "^0.3.3",
+    "axios": "^0.22.0",
+    "axios-oauth-1.0a": "^0.3.2",
     "electron-is-dev": "^2.0.0",
     "ndjson-parse": "^1.0.4",
     "react": "^17.0.2",

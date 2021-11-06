@@ -11,10 +11,10 @@ export class Part extends BaseEntity {
   designId: number;
 
   @Column()
-  name: string;
-
-  @Column({nullable: true})
   bricklinkId: number;
+
+  @Column()
+  name: string;
 
   @Column()
   price: number;

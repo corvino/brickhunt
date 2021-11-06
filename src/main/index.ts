@@ -3,12 +3,14 @@ import path from "path";
 import os from "os";
 import util from "util";
 import process from "process";
-import { app, BrowserWindow, dialog, ipcMain, session } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, MenuItem, session } from "electron";
 import electronIsDev from "electron-is-dev";
 import {Connection, createConnection, Repository, ConnectionManager} from "typeorm";
 import xml2js from "xml2js";
 
 import * as entities from "./entity";
+
+let buildItems: entities.BuildItem[];
 
 async function loadReactDevTools() {
   console.log("loading react dev tools.");
@@ -82,21 +84,36 @@ app.whenReady().then(async () => {
 ipcMain.on("buildList", async (event) => {
   const builds = await entities.Build.find();
 
+
   event.reply("builds", builds);
 });
 
+ipcMain.on("build", async (event, arg) => {
+  const builds = await entities.Build.find({ where: { id: arg }, relations: ["items", "items.partColor", "items.partColor.color", "items.partColor.part"]});
+  const build = builds[0];
+
+  console.log("build");
+  event.reply("build", build);
+});
+
 ipcMain.on("openFile", async (event) => {
-    const filePath = await openFile()
-    event.reply("openFile", filePath)
+    const filePath = await openFile();
+    event.reply("openFile", filePath);
 });
 
 ipcMain.on("createBuild", async (event, arg) => {
   const build = new entities.Build();
   build.name = arg.name;
+  build.items = buildItems;
+
   await build.save();
 
   event.reply("buildCreated");
 });
+
+function nameToLowerCase(name){
+  return name.toLowerCase();
+}
 
 async function openFile() {
   const result = await dialog.showOpenDialog(mainWindow, {
@@ -105,15 +122,43 @@ async function openFile() {
 
   if (!result.canceled && 1 == result.filePaths.length) {
     const filePath = result.filePaths[0];
+    const xmlOptions = {
+      tagNameProcessors: [nameToLowerCase],
+      attrNameProcessors: [nameToLowerCase]
+    };
     const data = await fs.promises.readFile(filePath, "utf-8");
-    xml2js.parseString(data, function (err, result) {
-     console.dir(result);
-    });
-    // parseString(xml, function (err, result) {
-    //   console.dir(result);
-    // });
+    try {
+      const items = await xml2js.parseStringPromise(data, xmlOptions);
+      buildItems = <entities.BuildItem[]> (await Promise.all(items.inventory.item.map(async (item) => {
+        // console.log(item);
+        const partColor = await entities.PartColor.find({
+          relations: ["color", "part"],
+          where: {
+            color: { bricklinkId: parseInt(item.color) },
+            part: { bricklinkId: parseInt(item.itemid) }
+          }
+        });
 
-    // Parse file and stash date to be saved when list is created.
+        // If we have an unusual result from the find, log something.
+        // We haven't fixed all parts yet, only those available from Pick a Brick.
+        if (1 !== partColor.length) {
+          console.log(`designId: ${parseInt(item.itemid)}, color: ${parseInt(item.color)}, results: ${partColor.length}`);
+          for (const part of partColor) {
+            console.log(`  ${part.part.name}, ${part.part.designId} (${part.part.bricklinkId}), ${part.color.name}, ${part.color.id} (${part.color.bricklinkId})`);
+          }
+
+          return null;
+        }
+
+        const buildItem = new entities.BuildItem();
+        buildItem.partColor = partColor[0];
+        buildItem.quantity = item.minqty;
+
+        return buildItem;
+      }))).filter(x => x);
+    } catch (error) {
+      console.log(error);
+    }
     return filePath;
   }
 }

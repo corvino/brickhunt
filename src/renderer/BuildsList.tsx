@@ -1,7 +1,8 @@
 const { ipcRenderer } = require('electron');
 import React, { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 import { Dialog } from '@headlessui/react'
-import { UploadIcon, PlusCircleIcon } from "@heroicons/react/outline";
+import { PlusCircleIcon, TrashIcon, UploadIcon } from "@heroicons/react/outline";
 
 const openFile = (event) => {
   ipcRenderer.send("openFile");
@@ -121,22 +122,30 @@ const BuildHeaderItem = (props) => {
   );
 }
 
-const PartsTableHeader = () => {
+const BuildTableHeader = () => {
   return (
     <thead className="bg-gray-50">
       <tr>
         <BuildHeaderItem title="Name" />
+        <th></th>
       </tr>
     </thead>
   );
 }
 
+
+
 const BuildRow = (props) => {
   return (
     <tr>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {props.name}
-      </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <NavLink to={`build/${props.id}`} className="block">
+            {props.name}
+          </NavLink>
+        </td>
+        <td className="w-10">
+          <TrashIcon className="block h-6 w-6 text-red-500" />
+        </td>
     </tr>
   );
 }
@@ -173,7 +182,7 @@ export default () => {
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <PartsTableHeader />
+                    <BuildTableHeader />
                     <tbody className="bg-white divide-y divide-gray-200">
                       {builds.map(build => (
                         <BuildRow key={build.id} {...build} />
