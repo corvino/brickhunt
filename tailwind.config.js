@@ -10,6 +10,7 @@ module.exports = {
         amber: colors.amber,
         cyan: colors.cyan,
         fuchsia: colors.fuchsia,
+        indigo: colors.indigo,
         orange: colors.orange,
         rose: colors.rose,
         sky: colors.sky,
@@ -20,5 +21,7 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/forms"),
+  ],
 };
