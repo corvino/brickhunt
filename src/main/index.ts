@@ -83,22 +83,12 @@ app.whenReady().then(async () => {
 
 ipcMain.on("buildList", async (event) => {
   const builds = await entities.Build.find();
-
-
   event.reply("builds", builds);
 });
 
 ipcMain.on("build", async (event, arg) => {
   const builds = await entities.Build.find({ where: { id: arg }, relations: ["items", "items.partColor", "items.partColor.color", "items.partColor.part"]});
-  const build = builds[0];
-
-  console.log("build");
-  event.reply("build", build);
-});
-
-ipcMain.on("openFile", async (event) => {
-    const filePath = await openFile();
-    event.reply("openFile", filePath);
+  event.reply("build", builds[0]);
 });
 
 ipcMain.on("createBuild", async (event, arg) => {
@@ -109,6 +99,30 @@ ipcMain.on("createBuild", async (event, arg) => {
   await build.save();
 
   event.reply("buildCreated");
+});
+
+ipcMain.on("plans", async (event) => {
+  const plans = await entities.Plan.find();
+  event.reply("plans", plans);
+});
+
+ipcMain.on("plan", async (event, arg) => {
+  const plans = await entities.Plan.find({ where: { id: arg }, relations: ["builds"] });
+  event.reply("plan", plans[0]);
+});
+
+ipcMain.on("newPlan", async (event, arg) => {
+  const plan = new entities.Plan();
+  plan.name = arg.name;
+
+  await plan.save();
+
+  event.reply("newPlan");
+});
+
+ipcMain.on("openFile", async (event) => {
+    const filePath = await openFile();
+    event.reply("openFile", filePath);
 });
 
 function nameToLowerCase(name){

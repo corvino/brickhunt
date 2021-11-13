@@ -1,7 +1,7 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer } = require("electron");
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Dialog } from '@headlessui/react'
+import { Dialog } from "@headlessui/react";
 import { PlusCircleIcon, TrashIcon, UploadIcon } from "@heroicons/react/outline";
 
 const openFile = (event) => {
@@ -138,14 +138,14 @@ const BuildTableHeader = () => {
 const BuildRow = (props) => {
   return (
     <tr>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          <NavLink to={`build/${props.id}`} className="block">
-            {props.name}
-          </NavLink>
-        </td>
-        <td className="w-10">
-          <TrashIcon className="block h-6 w-6 text-red-500" />
-        </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <NavLink to={`build/${props.id}`} className="block">
+          {props.name}
+        </NavLink>
+      </td>
+      <td className="w-10">
+        <TrashIcon className="block h-6 w-6 text-red-500" />
+      </td>
     </tr>
   );
 }
