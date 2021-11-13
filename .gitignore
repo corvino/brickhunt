@@ -2,4 +2,8 @@ node_modules
 build
 watch
 
+data
+bricklink-data
+parts
+
 Brickhunt.sqlite
