@@ -23,8 +23,6 @@ export default (props) => {
     });
   }, []);
 
-  console.log(build.items)
-
   const HeaderItem = (props) => {
     return (
       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -76,7 +74,7 @@ export default (props) => {
       <TableHeader />
         <tbody className="bg-white divide-y divide-gray-200">
           {props.items.map(item => (
-            <TableRow item={item} />
+            <TableRow key={item.id} item={item} />
           ))}
         </tbody>
       </table >

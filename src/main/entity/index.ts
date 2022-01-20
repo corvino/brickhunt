@@ -8,4 +8,4 @@ import { Plan } from "./Plan";
 
 const All = [Build, BuildItem, Color, ColorFamily, Part, PartColor, Plan];
 
-export { All, Build, BuildItem, Color, ColorFamily, Part, PartColor, Plan};
+export { All, Build, BuildItem, Color, ColorFamily, Part, PartColor, Plan };

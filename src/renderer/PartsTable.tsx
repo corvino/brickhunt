@@ -2,7 +2,6 @@ import React, {useState, useEffect } from "react";
 const { ipcRenderer } = require('electron');
 
 import { Dialog } from '@headlessui/react'
-import { partition } from "../../../../Library/Caches/typescript/4.4/node_modules/@types/lodash";
 
 const DesignDetail = (props) => {
 

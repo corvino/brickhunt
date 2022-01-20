@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany} from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import * as e from ".";
 
 @Entity()
@@ -10,6 +10,7 @@ export class Plan extends BaseEntity {
   @Column()
   name: string;
 
-  @OneToMany(() => e.Build, b => b.plans)
+  @ManyToMany(() => e.Build)
+  @JoinTable()
   builds: e.Build[]
 }

@@ -21,12 +21,12 @@ const TableBody = (props) => {
   if (0 < items.length) {
     return (
       <>
-        {items.map((item, index) => {
-          const selected = props.selectedBuilds.includes(index);
+        {items.map((item) => {
+          const selected = props.selectedBuilds.includes(item.id);
           return (
             <tr
               className={selected ? "bg-gray-500" : ""}
-              onClick={() => { props.toggleSelection(index) }}
+              onClick={() => { props.toggleSelection(item.id) }}
               key={item.id}>
               <TD className={selected ? "text-white" : ""}>
                 {item.name}
@@ -57,8 +57,8 @@ export default (props) => {
     });
   }, []);
 
-  const add = () => {
-    ipcRenderer.send("newPlan", {name: name});
+  const add = (builds, planId) => {
+    ipcRenderer.send("addBuilds", { builds, planId });
   }
 
   const toggleSelection = (id) => {
@@ -107,7 +107,7 @@ export default (props) => {
             <button
               type="submit"
               className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
-              onClick={(_) => { add(); close(); }}
+              onClick={(_) => { add(selectedBuilds, props.plan.id); close(); }}
             >
               Save
             </button>

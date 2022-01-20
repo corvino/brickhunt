@@ -3,10 +3,11 @@ import { ipcRenderer } from "electron";
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { ArrowNarrowLeftIcon } from "@heroicons/react/outline";
-import { HeaderItem, Table } from "../Common/Table";
+import { HeaderItem, Table, TD } from "../Common/Table";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 
-import AddBuild from "./AddBuild"
+import AddBuild from "./AddBuild";
+import PlanItems from "./PlanItems";
 
 export default (props) => {
   const {params: {id}} = props.match;
@@ -14,7 +15,10 @@ export default (props) => {
   let [isAddOpen, setIsAddOpen] = useState(false);
 
   let [plan, setPlan] = useState({builds: []} as any);
-  let [items, setItems] = useState([])
+  // FIXME: This should keep the item association, so that each item
+  // can list the each builds quantity for that item. (This should be
+  // a fun bit of data wrangling.)
+  const items = plan.builds.flatMap(b => b.items);
 
   useEffect(() => {
     ipcRenderer.send("plan", id);
@@ -37,9 +41,7 @@ export default (props) => {
   const TableHeader = () => {
     return (
       <tr>
-        <HeaderItem>Image</HeaderItem>
         <HeaderItem>Name</HeaderItem>
-        <HeaderItem>title</HeaderItem>
         <HeaderItem>
           Quantity
           <AddButton />
@@ -49,31 +51,31 @@ export default (props) => {
   }
 
   const TableBody = () => {
-    if (0 < items.length) {
-      return (
-        <> it items.length
-          {items.map(item => (
-            <tr><td>hello</td></tr>
-          ))}
-        </>
-      );
-    } else {
-      return <tr><td>hello</td></tr>
-    }
+    return (
+      <>
+        {plan.builds.map(build => (
+          <tr key={build.id}>
+            <TD>{build.name}</TD>
+            <TD>{build.items.length}</TD>
+          </tr>
+        ))}
+      </>
+    );
   }
 
   return (
     <div>
-      <header className="py-4">
+      <header className="py-4 text-gray-600 text-xl">
         <NavLink to="/plans">
           <ArrowNarrowLeftIcon className="inline-block w-6 align-baseline mr-2" />
         </NavLink>
-        <h1 className="inline-block text-xl font-bold leading-tight align-top text-gray-900">
+        <h1 className="inline-block text-xl font-bold leading-tight align-top">
           {plan.name}
         </h1>
       </header>
 
       <div>
+        <p className="test-gray-500">Builds</p>
         {0 < plan.builds.length ?
           <Table header={<TableHeader />}>
             <TableBody />
@@ -81,7 +83,14 @@ export default (props) => {
         :
           <p>No builds<AddButton /></p>
         }
+      </div>
 
+      <div className="mt-12">
+        {0 < items.length ?
+          <PlanItems items={items} />
+        :
+          <p>No Items</p>
+        }
       </div>
 
       <AddBuild plan={plan} open={isAddOpen} close={closeAdd} />

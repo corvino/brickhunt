@@ -10,6 +10,7 @@ import xml2js from "xml2js";
 
 import * as entities from "./entity";
 
+// Items parsed from XML file that _may_ be saved with a build.
 let buildItems: entities.BuildItem[];
 
 async function loadReactDevTools() {
@@ -81,6 +82,12 @@ app.whenReady().then(async () => {
   });
 });
 
+//
+// "API" IPC calls for data access
+//
+
+// Build
+
 ipcMain.on("buildList", async (event) => {
   const builds = await entities.Build.find();
   event.reply("builds", builds);
@@ -101,13 +108,15 @@ ipcMain.on("createBuild", async (event, arg) => {
   event.reply("buildCreated");
 });
 
+// Plan
+
 ipcMain.on("plans", async (event) => {
   const plans = await entities.Plan.find();
   event.reply("plans", plans);
 });
 
 ipcMain.on("plan", async (event, arg) => {
-  const plans = await entities.Plan.find({ where: { id: arg }, relations: ["builds", "builds.items", "builds.items.partColor", "builds.items.partColor.color"] });
+  const plans = await entities.Plan.find({ where: { id: arg }, relations: ["builds", "builds.items", "builds.items.partColor", "builds.items.partColor.color", "builds.items.partColor.part"] });
   event.reply("plan", plans[0]);
 });
 
@@ -119,6 +128,34 @@ ipcMain.on("newPlan", async (event, arg) => {
 
   event.reply("newPlan");
 });
+
+ipcMain.on("addBuilds", async(event, arg) => {
+  const plan = (await entities.Plan.find({ where: { id: arg.planId }, relations: ["builds"] }))[0];
+
+  // for await (const buildId of arg.builds) {
+  //   await entities.Build.find({ where: { id: buildId } });
+  // }
+
+  // FIXME: This needs checking to see that existing builds are merged with selected builds.
+  // Possibly builds could be deleted here, but using a remove button to accomplish for a
+  // build at a time seems preferable.
+  const builds = await Promise.all(arg.builds.map(async (buildId) => {
+    return (await entities.Build.find({ where: { id: buildId } }))[0];
+  }));
+
+  plan.builds = builds;
+  plan.save();
+});
+
+// Part
+
+ipcMain.on("parts", async (event) => {
+  const parts = (await entities.Part.find());
+
+  event.reply("parts", parts);
+});
+
+// File dialog and data handling for Bricklink XML files
 
 ipcMain.on("openFile", async (event) => {
     const filePath = await openFile();
@@ -143,8 +180,8 @@ async function openFile() {
     const data = await fs.promises.readFile(filePath, "utf-8");
     try {
       const items = await xml2js.parseStringPromise(data, xmlOptions);
+      // Stash build items for use when saving build.
       buildItems = <entities.BuildItem[]> (await Promise.all(items.inventory.item.map(async (item) => {
-        // console.log(item);
         const partColor = await entities.PartColor.find({
           relations: ["color", "part"],
           where: {
@@ -176,9 +213,3 @@ async function openFile() {
     return filePath;
   }
 }
-
-ipcMain.on("parts", async (event) => {
-  const parts = (await entities.Part.find());
-
-  event.reply("parts", parts);
-});
