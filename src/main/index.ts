@@ -107,7 +107,7 @@ ipcMain.on("plans", async (event) => {
 });
 
 ipcMain.on("plan", async (event, arg) => {
-  const plans = await entities.Plan.find({ where: { id: arg }, relations: ["builds"] });
+  const plans = await entities.Plan.find({ where: { id: arg }, relations: ["builds", "builds.items", "builds.items.partColor", "builds.items.partColor.color"] });
   event.reply("plan", plans[0]);
 });
 

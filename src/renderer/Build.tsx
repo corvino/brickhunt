@@ -1,7 +1,9 @@
-const { ipcRenderer } = require('electron');
+import { ipcRenderer } from "electron";
+
 import React, { useEffect, useState } from "react";
-import { ArrowNarrowLeftIcon } from "@heroicons/react/outline";
 import { NavLink } from "react-router-dom";
+
+import { ArrowNarrowLeftIcon } from "@heroicons/react/outline";
 
 export default (props) => {
   const {params: {id}} = props.match;
@@ -16,7 +18,6 @@ export default (props) => {
     ipcRenderer.send("build", id);
 
     ipcRenderer.on("build", (_, build) => {
-      console.log("got");
       setBuild(build);
       setItems(build.items);
     });

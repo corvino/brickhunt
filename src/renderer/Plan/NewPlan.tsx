@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 const { ipcRenderer } = require("electron");

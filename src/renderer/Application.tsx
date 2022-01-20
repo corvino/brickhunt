@@ -7,6 +7,7 @@ import Build from "./Build";
 import BuildsList from "./BuildsList";
 import PartsTable from "./PartsTable";
 import PlansList from "./Plan/PlansList";
+import Plan from "./Plan/Plan";
 
 const navigation = [
   { name: "Parts", href: "/parts" },
@@ -88,6 +89,7 @@ class Application extends Component {
                   <Route path="/builds" component={BuildsList} />
                   <Route path="/build/:id" component={Build} />
                   <Route path="/plans" component={PlansList} />
+                  <Route path="/plan/:id" component={Plan} />
                   <Route exact path="/"><Redirect to="/parts" /></Route>
                 </Switch>
               </Router>
