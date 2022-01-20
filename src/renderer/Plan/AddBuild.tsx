@@ -5,6 +5,7 @@ import { HeaderItem, Table, TD } from "../Common/Table";
 import { ipcRenderer } from "electron";
 import { Dialog } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/solid";
+import { XIcon } from "@heroicons/react/outline";
 
 const TableHeader = () => {
   return (
@@ -85,6 +86,10 @@ export default (props) => {
 
       <div className="flex h-screen justify-center items-center">
         <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform ring-1 ring-gray-900 ring-opacity-5 bg-white shadow-xl rounded-2xl">
+
+          <button type="button" className="float-right" onClick={close}>
+            <XIcon className="h-5 w-5 text-gray-600" />
+          </button>
 
           <Dialog.Title className="text-lg font-medium leading-6 text-gray-700">Add Build</Dialog.Title>
 

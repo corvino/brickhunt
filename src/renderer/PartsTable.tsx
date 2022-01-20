@@ -2,6 +2,7 @@ import React, {useState, useEffect } from "react";
 const { ipcRenderer } = require('electron');
 
 import { Dialog } from '@headlessui/react'
+import { XIcon } from "@heroicons/react/outline";
 
 const DesignDetail = (props) => {
 
@@ -15,6 +16,10 @@ const DesignDetail = (props) => {
     <Dialog as="div" className="fixed inset-0 z-10" open={props.open} onClose={close}>
       <div className="flex h-screen justify-center items-center">
         <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform ring-1 ring-gray-900 ring-opacity-5 bg-white shadow-xl rounded-2xl">
+
+          <button type="button" className="float-right" onClick={close}>
+            <XIcon className="h-5 w-5 text-gray-600" />
+          </button>
 
           <div className="m-auto max-w-[calc(100vw-100px)] max-h-[calc(100vh-100px)] overflow-y-scroll py-4 px-4 sm:px-6 lg:px-8">
             <form className="space-y-8 divide-y divide-gray-200">
@@ -46,7 +51,7 @@ const DesignDetail = (props) => {
                     <div className="mt-1 sm:mt-0 sm:col-span-2">
                       {part.partColors.map((partColor) => {
                         return (
-                          <div>
+                          <div key={partColor.id}>
                             <div className="inline-block w-1/6">
                               <img src={partColor.imgURL} className="h-10 w-10"></img>
                             </div>

@@ -22,7 +22,7 @@ function classNames(...classes) {
 class Application extends Component {
   render() {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-100">
         <Disclosure as="nav" className="bg-white border-b border-gray-200">
           {({ open }) => (
             <>
@@ -33,20 +33,21 @@ class Application extends Component {
                       {navigation.map((item) => {
                         const current = window.location.pathname === item.href;
                         return (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          className={classNames(
-                            current
-                              ? 'border-indigo-500 text-gray-900'
-                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                            'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium'
-                          )}
-                          aria-current={current ? 'page' : undefined}
-                        >
-                          {item.name}
-                        </a>
-                      )})}
+                          <a
+                            key={item.name}
+                            href={item.href}
+                            className={classNames(
+                              current
+                                ? 'border-indigo-500 text-gray-900'
+                                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                              'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium'
+                            )}
+                            aria-current={current ? 'page' : undefined}
+                          >
+                            {item.name}
+                          </a>
+                        )
+                      })}
                     </div>
                   </div>
                 </div>
@@ -78,25 +79,20 @@ class Application extends Component {
           )}
         </Disclosure>
 
-        <div className="pb-10">
+        <div className="py-6">
+          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <Router>
+              <Switch>
+                <Route path="/parts" component={PartsTable} />
+                <Route path="/builds" component={BuildsList} />
+                <Route path="/build/:id" component={Build} />
+                <Route path="/plans" component={PlansList} />
+                <Route path="/plan/:id" component={Plan} />
+                <Route exact path="/"><Redirect to="/parts" /></Route>
+              </Switch>
+            </Router>
 
-          <div className="bg-gray-100 py-6">
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-              <Router>
-                <Switch>
-                  <Route path="/parts" component={PartsTable} />
-                  <Route path="/builds" component={BuildsList} />
-                  <Route path="/build/:id" component={Build} />
-                  <Route path="/plans" component={PlansList} />
-                  <Route path="/plan/:id" component={Plan} />
-                  <Route exact path="/"><Redirect to="/parts" /></Route>
-                </Switch>
-              </Router>
-
-            </div>
           </div>
-
         </div>
       </div>
     );

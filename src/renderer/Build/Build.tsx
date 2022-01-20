@@ -83,11 +83,11 @@ export default (props) => {
 
   return (
     <div>
-      <header className="py-4">
+      <header className="py-4 text-gray-600">
         <NavLink to="/builds">
           <ArrowNarrowLeftIcon className="inline-block w-6 align-baseline mr-2" />
         </NavLink>
-        <h1 className="inline-block text-3xl font-bold leading-tight text-gray-900">
+        <h1 className="inline-block text-xl font-bold leading-tight align-top">
           {build.name}
         </h1>
       </header>
