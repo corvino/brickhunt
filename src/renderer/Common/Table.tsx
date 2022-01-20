@@ -1,8 +1,9 @@
 import React from "react";
 
 export const TD = (props) => {
+  const className = `px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${props.className}`
   return (
-    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+    <td className={className}>
       {props.children}
     </td>
   );

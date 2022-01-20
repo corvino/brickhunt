@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 
 import { HeaderItem, Table, TD } from "../Common/Table";
 
-const { ipcRenderer } = require("electron");
+import { ipcRenderer } from "electron";
 import { Dialog } from "@headlessui/react";
+import { CheckIcon } from "@heroicons/react/solid";
 
 const TableHeader = () => {
   return (
     <tr>
       <HeaderItem>Name</HeaderItem>
+      <HeaderItem></HeaderItem>
     </tr>
   );
 }
@@ -19,14 +21,24 @@ const TableBody = (props) => {
   if (0 < items.length) {
     return (
       <>
-        {items.map((item, index) => (
-          <tr
-            className = {props.selectedBuilds.includes(index) ? "bg-red-500" : ""}
-            onClick={() => { props.toggleSelection(index) }}
-            key={item.id}>
-              <TD>{item.name}</TD>
-          </tr>
-        ))}
+        {items.map((item, index) => {
+          const selected = props.selectedBuilds.includes(index);
+          return (
+            <tr
+              className={selected ? "bg-gray-500" : ""}
+              onClick={() => { props.toggleSelection(index) }}
+              key={item.id}>
+              <TD className={selected ? "text-white" : ""}>
+                {item.name}
+              </TD>
+              <td>
+                {selected &&
+                  <CheckIcon className="w-5 h-5 text-white" />
+                }
+              </td>
+            </tr>
+          );
+        })}
       </>
     );
   }
@@ -87,14 +99,14 @@ export default (props) => {
           <div className="flex justify-end mt-12">
             <button
               type="button"
-              className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
               onClick={close}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
               onClick={(_) => { add(); close(); }}
             >
               Save
