@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Link, Redirect, Route, Switch } from "react-ro
 
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 
-import Build from "./Build";
-import BuildsList from "./BuildsList";
+import Build from "./Build/Build";
+import BuildsList from "./Build/BuildsList";
 import PartsTable from "./PartsTable";
 import PlansList from "./Plan/PlansList";
 import Plan from "./Plan/Plan";
