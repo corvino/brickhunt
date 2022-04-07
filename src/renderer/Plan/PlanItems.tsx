@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-const HeaderItem = (props) => {
-  return (
-    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-      {props.title}
-    </th>
-  );
-}
+import { HeaderItem, Table, TD } from "../Common/Table";
 
 const TableHeader = () => {
   return (
-    <thead className="bg-gray-50">
-      <tr>
-        <HeaderItem title="Image" />
-        <HeaderItem title="Name"/>
-        <HeaderItem title="Color"/>
-        <HeaderItem title="Quantity"/>
-      </tr>
-    </thead>
+    <tr>
+      <HeaderItem>Image</HeaderItem>
+      <HeaderItem>Name</HeaderItem>
+      <HeaderItem>Color</HeaderItem>
+      <HeaderItem>Quantity</HeaderItem>
+    </tr>
   );
 }
 
@@ -29,39 +21,41 @@ const TableRow = (props) => {
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
           <div className="flex-shrink-0 h-10 w-10">
-            <img src={item.partColor.imgURL}></img>
+            <img src=""></img>
           </div>
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {item.partColor.part.name}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {item.partColor.color.name}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {item.quantity}
-      </td>
+      <TD>
+        {item.design.name}
+      </TD>
+      <TD></TD>
+      <TD>
+      </TD>
     </tr>
   );
 }
 
-const Table = (props) => {
+const Items = (props) => {
+  // FIXME: We're not even getting the right data structure here, I think.
+  // Should be easier when that is done, although how to group items from multiple plans is
+  // an interesting UX problem.
+  console.log("plan items!!");
+  console.log(props.items);
+
   return (
-    <table className="min-w-full divide-y divide-gray-200">
-    <TableHeader />
-      <tbody className="bg-white divide-y divide-gray-200">
-        {props.items.map(item => (
-          <TableRow key={item.id} item={item} />
-        ))}
-      </tbody>
-    </table >
+    <>
+      {props.items.map((item, index) => (
+        <TableRow key={index} item={item} />
+      ))}
+    </>
   );
 }
 
 export default (props) => (
   <div>
     <p>Parts</p>
-    <Table items={props.items} />
+    <Table header={<TableHeader />} >
+      <Items items={props.items} />
+    </Table>
   </div>
 );

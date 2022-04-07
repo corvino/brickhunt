@@ -67,7 +67,7 @@ export default () => {
                       <Row key={plan.id} {...plan} />
                     ))}
                   </tbody>
-                </table >
+                </table>
               </div>
             </div>
           </div>
