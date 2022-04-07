@@ -4,7 +4,7 @@
   "description": "",
   "main": "watch/main/index.js",
   "scripts": {
-    "start": "concurrently 'vite --port 3912' 'tsc --watch -p src/main/ --outDir watch/main' 'PORT=3912 electron .'",
+    "start": "concurrently 'npm run debug' 'sleep 0.1 && PORT=3912 electron .'",
     "debug": "concurrently 'vite --port 3912' 'tsc --watch -p src/main/ --outDir watch/main'",
     "build": "concurrently 'npm run build:main' 'npm run build:renderer'",
     "build:main": "tsc -p src/main --outDir build/main",
